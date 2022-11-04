@@ -24,10 +24,7 @@ namespace ConnectedArchitectureDemo
             conn = new SqlConnection(constr);
         }
 
-        private void btnSearch_Click(object sender, EventArgs e)
-        {
-
-        }
+      
 
         private void btnSave_Click(object sender, EventArgs e)
         {
@@ -105,9 +102,68 @@ namespace ConnectedArchitectureDemo
                 conn.Close();
             }
         }
+        private void btnSearch_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                string query = "select * from emp where id=@id";
+                cmd = new SqlCommand(query, conn);
+                cmd.Parameters.AddWithValue("@id", Convert.ToInt32(txtID.Text));
+                conn.Open();
+                dr = cmd.ExecuteReader();
+                if (dr.HasRows)
+                {
+                    while (dr.Read())
+                    {
+                        txtName.Text = dr["Name"].ToString();
+                        txtSalary.Text = dr["Salary"].ToString();
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("Record not found");
+                }
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+            finally
+            {
+                conn.Close();
+            }
+
+        }
 
         private void btnShowAll_Click(object sender, EventArgs e)
         {
+            try
+            {
+                string query = "select * from emp";
+                cmd = new SqlCommand(query, conn);
+                conn.Open();
+                dr = cmd.ExecuteReader();
+                if (dr.HasRows)
+                {
+                    DataTable dt = new DataTable();
+                    dt.Load(dr);
+                    dataGridView1.DataSource = dt;
+                }
+                else
+                {
+                    MessageBox.Show("Record not found");
+                }
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+            finally
+            {
+                conn.Close();
+            }
 
         }
     }
